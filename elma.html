@@ -1,0 +1,424 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكونات قارورة الماء المعدني | التركيب الكيميائي والأجزاء الفيزيائية</title>
+<style>
+  :root{
+    --navy-deep:#050b1a;
+    --navy:#0a1830;
+    --navy-light:#132a4d;
+    --gold:#e8b84b;
+    --gold-bright:#ffd777;
+    --gold-dim:#8a6d2e;
+    --text:#eaf0ff;
+    --text-dim:#9fb0d0;
+    --blue:#7fb8e0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--navy-deep);
+    color:var(--text); font-family:'Tahoma','Segoe UI',sans-serif;
+    overflow-x:hidden; position:relative;
+  }
+  #stars{position:fixed; inset:0; z-index:0; pointer-events:none;}
+  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:20px 16px 60px;}
+  header{text-align:center; margin-bottom:18px;}
+  h1{
+    font-size:clamp(21px,4vw,30px); color:var(--gold-bright);
+    text-shadow:0 0 20px rgba(232,184,75,0.35); margin:10px 0 6px;
+  }
+  header p{color:var(--text-dim); margin:0; font-size:14px;}
+
+  .tabs{
+    display:flex; gap:10px; justify-content:center; margin-bottom:18px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    background:transparent; border:1px solid var(--gold-dim); color:var(--text-dim);
+    padding:10px 20px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:bold;
+    transition:.2s;
+  }
+  .tab-btn.active{
+    background:linear-gradient(160deg,var(--gold-bright),var(--gold-dim));
+    color:#231800; border-color:transparent;
+    box-shadow:0 4px 14px rgba(232,184,75,0.3);
+  }
+
+  .panel{
+    background:linear-gradient(160deg,var(--navy-light),var(--navy));
+    border:1px solid rgba(232,184,75,0.25);
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5), inset 0 0 40px rgba(232,184,75,0.03);
+    padding:20px; margin-bottom:18px;
+    display:none;
+  }
+  .panel.active{display:block;}
+
+  h2{color:var(--gold); font-size:19px; margin:0 0 14px; border-bottom:1px solid rgba(232,184,75,0.2); padding-bottom:8px;}
+
+  /* ---- Tab 1: physical bottle ---- */
+  .bottle-layout{
+    display:grid; grid-template-columns:320px 1fr; gap:24px;
+  }
+  @media (max-width:640px){ .bottle-layout{grid-template-columns:1fr;} }
+
+  #bottleSvg{width:100%; max-width:300px; margin:0 auto; display:block; cursor:default;}
+  .part{ cursor:pointer; transition:filter .2s; }
+  .part:hover{ filter:brightness(1.35); }
+  .part.selected{ filter:brightness(1.5) drop-shadow(0 0 8px #ffd777); }
+
+  .partlist{ display:flex; flex-direction:column; gap:8px; }
+  .part-item{
+    background:rgba(0,0,0,0.25); border:1px solid rgba(232,184,75,0.15);
+    border-radius:10px; padding:12px 14px; cursor:pointer; transition:.2s;
+  }
+  .part-item:hover{ border-color:var(--gold-dim); }
+  .part-item.selected{ border-color:var(--gold); background:rgba(232,184,75,0.08); }
+  .part-item .pname{ color:var(--gold-bright); font-weight:bold; font-size:15px; margin-bottom:4px; }
+  .part-item .pdesc{ color:var(--text-dim); font-size:13px; line-height:1.7; }
+
+  .info-box{
+    margin-top:16px; background:rgba(0,0,0,0.25); border-right:3px solid var(--gold);
+    border-radius:8px; padding:14px 16px; min-height:60px;
+  }
+  .info-box .title{color:var(--gold-bright); font-weight:bold; margin-bottom:6px; font-size:15px;}
+  .info-box .body{color:var(--text-dim); font-size:14px; line-height:1.8;}
+
+  /* ---- Tab 2: chemical composition ---- */
+  .ion-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px;
+  }
+  .ion-card{
+    background:rgba(0,0,0,0.25); border:1px solid rgba(232,184,75,0.15);
+    border-radius:10px; padding:12px 14px;
+  }
+  .ion-card label{
+    display:flex; justify-content:space-between; font-size:14px; color:var(--gold); margin-bottom:6px;
+  }
+  .ion-card label .val{color:var(--gold-bright); font-weight:bold;}
+  .ion-card .formula{ font-family:'Consolas',monospace; color:var(--blue); font-size:13px; }
+  input[type=range]{ width:100%; accent-color:var(--gold); }
+
+  #compChart{ width:100%; display:block; margin-top:18px; border-radius:10px; background:rgba(0,0,0,0.2); }
+
+  .residue{
+    margin-top:16px; display:flex; justify-content:space-between; align-items:center;
+    background:rgba(232,184,75,0.08); border:1px solid rgba(232,184,75,0.25);
+    border-radius:10px; padding:14px 18px;
+  }
+  .residue .rlabel{color:var(--text-dim); font-size:14px;}
+  .residue .rval{color:var(--gold-bright); font-size:22px; font-weight:bold;}
+
+  .presets{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  button.preset{
+    background:transparent; border:1px solid var(--gold-dim); color:var(--gold);
+    padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px;
+  }
+  button.preset:hover{ background:rgba(232,184,75,0.1); }
+
+  .explain{ font-size:14px; line-height:2; color:var(--text-dim); }
+  .explain b{ color:var(--gold); }
+
+  footer{text-align:center; color:var(--text-dim); font-size:12px; margin-top:30px;}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="wrap">
+  <header>
+    <h1>💧 مكونات قارورة الماء المعدني</h1>
+    <p>استكشف الأجزاء الفيزيائية للقارورة، والتركيب الكيميائي (الأملاح المعدنية) للماء بداخلها</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="physical">🧴 الأجزاء الفيزيائية للقارورة</button>
+    <button class="tab-btn" data-tab="chemical">🧪 التركيب الكيميائي للماء</button>
+  </div>
+
+  <!-- ===================== TAB 1: PHYSICAL PARTS ===================== -->
+  <div class="panel active" id="panel-physical">
+    <h2>الأجزاء الفيزيائية للقارورة (اضغط على أي جزء)</h2>
+    <div class="bottle-layout">
+      <div>
+        <svg id="bottleSvg" viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">
+          <!-- cap -->
+          <g class="part" data-part="cap">
+            <rect x="78" y="10" width="44" height="26" rx="4" fill="#4a6fa5"/>
+            <rect x="78" y="10" width="44" height="6" rx="3" fill="#7fb8e0"/>
+          </g>
+          <!-- tamper ring -->
+          <g class="part" data-part="ring">
+            <rect x="80" y="38" width="40" height="6" fill="#3a5a85"/>
+          </g>
+          <!-- neck -->
+          <g class="part" data-part="neck">
+            <path d="M85,44 L85,70 Q85,78 95,80 L105,80 Q115,78 115,70 L115,44 Z" fill="rgba(127,184,224,0.35)" stroke="#7fb8e0" stroke-width="1.5"/>
+          </g>
+          <!-- shoulder -->
+          <g class="part" data-part="shoulder">
+            <path d="M85,70 Q85,110 40,130 L160,130 Q115,110 115,70 Z" fill="rgba(127,184,224,0.28)" stroke="#7fb8e0" stroke-width="1.5"/>
+          </g>
+          <!-- body -->
+          <g class="part" data-part="body">
+            <path d="M40,130 L40,360 Q40,375 55,378 L145,378 Q160,375 160,360 L160,130 Z" fill="rgba(127,184,224,0.22)" stroke="#7fb8e0" stroke-width="1.5"/>
+            <!-- ribs for grip -->
+            <path d="M40,200 Q100,210 160,200" fill="none" stroke="#7fb8e0" stroke-width="1" opacity="0.5"/>
+            <path d="M40,220 Q100,230 160,220" fill="none" stroke="#7fb8e0" stroke-width="1" opacity="0.5"/>
+          </g>
+          <!-- label -->
+          <g class="part" data-part="label">
+            <rect x="40" y="240" width="120" height="70" fill="#0f3a63" stroke="#ffd777" stroke-width="1.5"/>
+            <text x="100" y="270" text-anchor="middle" fill="#ffd777" font-size="13" font-weight="bold" font-family="Tahoma">ماء معدني</text>
+            <text x="100" y="290" text-anchor="middle" fill="#9fb0d0" font-size="9" font-family="Tahoma">طبيعي 100%</text>
+          </g>
+          <!-- base -->
+          <g class="part" data-part="base">
+            <path d="M40,360 L40,368 Q40,378 55,378 L145,378 Q160,378 160,368 L160,360 Z" fill="rgba(127,184,224,0.4)" stroke="#7fb8e0" stroke-width="1.5"/>
+            <path d="M55,378 Q100,388 145,378" fill="none" stroke="#7fb8e0" stroke-width="1.5"/>
+          </g>
+          <!-- water fill hint -->
+          <rect x="42" y="150" width="116" height="200" fill="#7fb8e0" opacity="0.08"/>
+        </svg>
+      </div>
+
+      <div>
+        <div class="partlist" id="partList">
+          <div class="part-item" data-part="cap">
+            <div class="pname">1. الغطاء (Bouchon)</div>
+            <div class="pdesc">مصنوع من البولي إيثيلين عالي الكثافة (HDPE)، يُغلق بإحكام لمنع التسرب والتلوث.</div>
+          </div>
+          <div class="part-item" data-part="ring">
+            <div class="pname">2. حلقة ضمان السلامة</div>
+            <div class="pdesc">حلقة بلاستيكية تنكسر عند فتح الغطاء لأول مرة، تثبت أن القارورة لم تُفتح من قبل.</div>
+          </div>
+          <div class="part-item" data-part="neck">
+            <div class="pname">3. العنق (Col)</div>
+            <div class="pdesc">الجزء الضيق أعلى القارورة، يحمل خيوط اللولبة (Filetage) التي تلتقي مع الغطاء.</div>
+          </div>
+          <div class="part-item" data-part="shoulder">
+            <div class="pname">4. الكتف (Épaule)</div>
+            <div class="pdesc">المنطقة المخروطية التي تربط العنق الضيق بجسم القارورة الأوسع.</div>
+          </div>
+          <div class="part-item" data-part="body">
+            <div class="pname">5. الجسم (Corps)</div>
+            <div class="pdesc">الجزء الأكبر، مصنوع من البولي إيثيلين تيريفثالات (PET)، خفيف وشفاف ومقاوم للكسر.</div>
+          </div>
+          <div class="part-item" data-part="label">
+            <div class="pname">6. البطاقة/الليبل (Étiquette)</div>
+            <div class="pdesc">تحمل معلومات المنتج: اسم العلامة، مصدر المياه، تاريخ الإنتاج والصلاحية، والتركيب الكيميائي.</div>
+          </div>
+          <div class="part-item" data-part="base">
+            <div class="pname">7. القاعدة (Base/Socle)</div>
+            <div class="pdesc">قاعدة مقواة (غالباً بتصميم بترولي الشكل) لتوزيع الوزن وضمان ثبات القارورة.</div>
+          </div>
+        </div>
+
+        <div class="info-box" id="infoBox">
+          <div class="title">💡 اضغط على أي جزء من القارورة أو من القائمة</div>
+          <div class="body">سيظهر هنا وصف تفصيلي لكل مكوّن من مكونات القارورة الفيزيائية.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB 2: CHEMICAL COMPOSITION ===================== -->
+  <div class="panel" id="panel-chemical">
+    <h2>التركيب الكيميائي للماء المعدني (الأملاح الذائبة)</h2>
+    <p class="explain">
+      حرّك الأشرطة لتغيير تركيز كل شاردة (أيون) بوحدة <b>ملغ/لتر (mg/L)</b> كما هو مذكور عادة على بطاقة القارورة،
+      أو اختر أحد النماذج الجاهزة لمياه معدنية معروفة.
+    </p>
+
+    <div class="presets">
+      <button class="preset" data-preset="light">💧 ماء قليل المعادن</button>
+      <button class="preset" data-preset="medium">💧 ماء متوسط المعادن</button>
+      <button class="preset" data-preset="rich">💧 ماء غني بالمعادن</button>
+    </div>
+
+    <div class="ion-grid" id="ionGrid"></div>
+
+    <canvas id="compChart" width="1000" height="260"></canvas>
+
+    <div class="residue">
+      <span class="rlabel">🧂 مجموع الأملاح الذائبة (البقايا الجافة عند 180°م)</span>
+      <span class="rval" id="residueVal">0 mg/L</span>
+    </div>
+
+    <div class="info-box" style="margin-top:18px;">
+      <div class="title">ℹ️ ملاحظة</div>
+      <div class="body">
+        كل هذه الشوارد طبيعية المصدر، تذوب في الماء أثناء مروره عبر الطبقات الصخرية الجوفية.
+        نسبها هي ما يحدد نوع الماء المعدني (خفيف، متوسط، أو غني بالمعادن) وطعمه المميز.
+      </div>
+    </div>
+  </div>
+
+  <footer>تجربة تفاعلية تعليمية • الفيزياء والكيمياء</footer>
+</div>
+
+<script>
+// ---------- خلفية النجوم ----------
+(function(){
+  const c=document.getElementById('stars');
+  const ctx=c.getContext('2d');
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize(); addEventListener('resize',resize);
+  const stars=Array.from({length:150},()=>({
+    x:Math.random()*c.width,y:Math.random()*c.height,
+    r:Math.random()*1.4+0.2, s:Math.random()*0.02+0.005, p:Math.random()*Math.PI*2
+  }));
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle='#050b1a'; ctx.fillRect(0,0,c.width,c.height);
+    for(const st of stars){
+      st.p+=st.s;
+      const alpha=0.4+0.6*Math.abs(Math.sin(st.p));
+      ctx.beginPath();
+      ctx.fillStyle=`rgba(232,184,75,${alpha*0.8})`;
+      ctx.arc(st.x,st.y,st.r,0,7);
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ---------- التبديل بين التبويبات ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- TAB 1: أجزاء القارورة ----------
+const infoBox=document.getElementById('infoBox');
+const partData={
+  cap:{title:'1. الغطاء (Bouchon)', body:'مصنوع من البولي إيثيلين عالي الكثافة (HDPE)، يُغلق بإحكام لمنع التسرب والتلوث ويحافظ على نظافة الماء.'},
+  ring:{title:'2. حلقة ضمان السلامة', body:'حلقة بلاستيكية رفيعة تنكسر عند فتح الغطاء لأول مرة، فتُثبت للمستهلك أن القارورة أصلية ولم تُفتح من قبل.'},
+  neck:{title:'3. العنق (Col)', body:'الجزء الضيق العلوي من القارورة، يحمل خيوط لولبية (Filetage) تتطابق مع خيوط الغطاء لإحكام الغلق.'},
+  shoulder:{title:'4. الكتف (Épaule)', body:'المنطقة المخروطية الانتقالية التي تصل بين العنق الضيق وجسم القارورة الأوسع، وتساهم في توزيع الضغط.'},
+  body:{title:'5. الجسم (Corps)', body:'أكبر جزء في القارورة، مصنوع من البلاستيك PET (البولي إيثيلين تيريفثالات): خفيف الوزن، شفاف، مقاوم للصدمات، وقابل لإعادة التدوير.'},
+  label:{title:'6. البطاقة/الليبل (Étiquette)', body:'ملصق يحمل اسم العلامة التجارية، مصدر الماء، تاريخ الإنتاج وتاريخ الصلاحية، وجدول التركيب الكيميائي (الشوارد المعدنية).'},
+  base:{title:'7. القاعدة (Base/Socle)', body:'قاعدة القارورة مقواة وغالباً بتصميم بترولي الشكل (Pétaloïde) لتحمل ضغط الغاز المذاب وتوزيع الوزن بثبات.'}
+};
+
+function selectPart(name){
+  document.querySelectorAll('.part').forEach(p=>p.classList.toggle('selected', p.dataset.part===name));
+  document.querySelectorAll('.part-item').forEach(p=>p.classList.toggle('selected', p.dataset.part===name));
+  const d=partData[name];
+  infoBox.querySelector('.title').textContent='🔹 '+d.title;
+  infoBox.querySelector('.body').textContent=d.body;
+}
+document.querySelectorAll('.part').forEach(el=>{
+  el.addEventListener('click',()=>selectPart(el.dataset.part));
+});
+document.querySelectorAll('.part-item').forEach(el=>{
+  el.addEventListener('click',()=>selectPart(el.dataset.part));
+});
+
+// ---------- TAB 2: التركيب الكيميائي ----------
+const ions=[
+  {key:'ca', name:'كالسيوم', formula:'Ca²⁺', max:600, val:80, color:'#ffd777'},
+  {key:'mg', name:'مغنيزيوم', formula:'Mg²⁺', max:200, val:26, color:'#7fb8e0'},
+  {key:'na', name:'صوديوم', formula:'Na⁺', max:1200, val:10, color:'#e8b84b'},
+  {key:'k',  name:'بوتاسيوم', formula:'K⁺', max:50,  val:2,  color:'#c792ea'},
+  {key:'hco3', name:'بيكربونات', formula:'HCO₃⁻', max:1500, val:250, color:'#82e0aa'},
+  {key:'so4', name:'كبريتات', formula:'SO₄²⁻', max:400, val:12, color:'#f5a3a3'},
+  {key:'cl', name:'كلوريد', formula:'Cl⁻', max:300, val:8, color:'#a9c9ff'},
+  {key:'no3', name:'نترات', formula:'NO₃⁻', max:50, val:3, color:'#ffb37f'}
+];
+
+const ionGrid=document.getElementById('ionGrid');
+ions.forEach(ion=>{
+  const div=document.createElement('div');
+  div.className='ion-card';
+  div.innerHTML=`
+    <label>${ion.name} <span class="formula">${ion.formula}</span> <span class="val" id="val-${ion.key}">${ion.val} mg/L</span></label>
+    <input type="range" id="range-${ion.key}" min="0" max="${ion.max}" step="1" value="${ion.val}">
+  `;
+  ionGrid.appendChild(div);
+});
+
+ions.forEach(ion=>{
+  document.getElementById('range-'+ion.key).addEventListener('input',e=>{
+    ion.val=parseFloat(e.target.value);
+    document.getElementById('val-'+ion.key).textContent=ion.val+' mg/L';
+    updateChart();
+  });
+});
+
+const presets={
+  light:{ca:20,mg:6,na:5,k:1,hco3:60,so4:5,cl:4,no3:2},
+  medium:{ca:80,mg:26,na:10,k:2,hco3:250,so4:12,cl:8,no3:3},
+  rich:{ca:450,mg:110,na:900,k:20,hco3:1200,so4:280,cl:220,no3:8}
+};
+document.querySelectorAll('.preset').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const p=presets[btn.dataset.preset];
+    ions.forEach(ion=>{
+      ion.val=p[ion.key];
+      document.getElementById('range-'+ion.key).value=ion.val;
+      document.getElementById('val-'+ion.key).textContent=ion.val+' mg/L';
+    });
+    updateChart();
+  });
+});
+
+const chartCanvas=document.getElementById('compChart');
+const cctx=chartCanvas.getContext('2d');
+
+function updateChart(){
+  const W=chartCanvas.width, H=chartCanvas.height;
+  cctx.clearRect(0,0,W,H);
+  const pad={l:60,r:20,t:20,b:60};
+  const maxVal=Math.max(...ions.map(i=>i.val),10);
+  const barW=(W-pad.l-pad.r)/ions.length;
+
+  // محاور
+  cctx.strokeStyle='rgba(159,176,208,0.3)';
+  cctx.beginPath();
+  cctx.moveTo(pad.l,H-pad.b); cctx.lineTo(W-pad.r,H-pad.b);
+  cctx.moveTo(pad.l,pad.t); cctx.lineTo(pad.l,H-pad.b);
+  cctx.stroke();
+
+  cctx.fillStyle='#9fb0d0';
+  cctx.font='11px Tahoma';
+  cctx.textAlign='center';
+
+  ions.forEach((ion,i)=>{
+    const x=pad.l + i*barW + barW*0.2;
+    const w=barW*0.6;
+    const h=(ion.val/maxVal)*(H-pad.t-pad.b);
+    const y=H-pad.b-h;
+    cctx.fillStyle=ion.color;
+    cctx.fillRect(x,y,w,h);
+    cctx.fillStyle='#eaf0ff';
+    cctx.font='bold 11px Tahoma';
+    cctx.fillText(ion.val, x+w/2, y-6);
+    cctx.fillStyle='#9fb0d0';
+    cctx.font='11px Tahoma';
+    cctx.fillText(ion.formula, x+w/2, H-pad.b+16);
+    cctx.font='10px Tahoma';
+    cctx.fillText(ion.name, x+w/2, H-pad.b+30);
+  });
+
+  cctx.save();
+  cctx.translate(18,H/2);
+  cctx.rotate(-Math.PI/2);
+  cctx.fillStyle='#9fb0d0';
+  cctx.textAlign='center';
+  cctx.fillText('التركيز (ملغ/لتر)',0,0);
+  cctx.restore();
+
+  const total=ions.reduce((s,i)=>s+i.val,0);
+  document.getElementById('residueVal').textContent=total.toFixed(0)+' mg/L';
+}
+updateChart();
+</script>
+</body>
+</html>
